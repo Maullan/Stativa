@@ -1,0 +1,827 @@
+<title>Stativa Open Course</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: lembar kertas grafik + kurva lonceng; hero dua kolom (judul | contoh soal interaktif), lalu fitur, paket, tentang, kontak */
+:root{
+  --bg:#F2F6F7; --surface:#FFFFFF; --ink:#0F2430; --muted:#4F6672; --line:#D5E0E4;
+  --teal:#0A7C78; --teal-soft:#D9EEEC; --signal:#F2B705; --signal-ink:#3A2C00; --grid:#E3EBEE;
+  --good:#17803D; --bad:#B42318;
+  --display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --text:'Instrument Sans','Segoe UI',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1A22; --surface:#122732; --ink:#E8F1F4; --muted:#9DB5C0; --line:#25414E;
+  --teal:#3FC2BB; --teal-soft:#14383D; --signal:#F2B705; --signal-ink:#2A2000; --grid:#10242E;
+  --good:#4ADE80; --bad:#F87171; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1A22; --surface:#122732; --ink:#E8F1F4; --muted:#9DB5C0; --line:#25414E;
+  --teal:#3FC2BB; --teal-soft:#14383D; --signal:#F2B705; --signal-ink:#2A2000; --grid:#10242E;
+  --good:#4ADE80; --bad:#F87171; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--text);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:32px 32px;background-attachment:scroll}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+@supports (padding:max(1px,2px)){.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--signal);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);line-height:1.08;margin:0;text-wrap:balance;letter-spacing:-.02em}
+h1{font-size:clamp(2.4rem,6vw,4.4rem);font-weight:800}
+h2{font-size:clamp(1.8rem,4vw,2.7rem);font-weight:700}
+h3{font-size:1.25rem;font-weight:700;letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{font:500 .78rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
+section{padding-block:clamp(56px,9vw,104px)}
+.lead{color:var(--muted);font-size:1.12rem;max-width:58ch}
+
+/* header */
+header{padding-block:20px}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font:800 1.45rem var(--display);text-decoration:none;letter-spacing:-.02em}
+.brand svg{width:34px;height:34px}
+nav{display:flex;gap:6px 22px;flex-wrap:wrap;align-items:center;font-weight:500;font-size:.96rem}
+nav a{text-decoration:none;color:var(--muted)}
+nav a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:10px;font:600 1rem var(--text);text-decoration:none;border:2px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.alt{background:transparent;color:var(--ink)}
+.btn.signal{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+nav .btn{padding:9px 16px;color:var(--bg)}
+nav .btn:hover{color:var(--bg)}
+
+/* hero */
+.hero{padding-top:clamp(28px,5vw,64px)}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,5vw,64px);align-items:center}
+.hero h1 em{font-style:normal;color:var(--teal)}
+.hero .lead{margin-top:22px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.chip{font:500 .85rem var(--mono);padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted)}
+.curve{margin-top:48px;width:100%;height:auto;display:block}
+.curve .fill{fill:var(--teal-soft)}
+.curve .stroke{fill:none;stroke:var(--teal);stroke-width:3}
+.curve .axis{stroke:var(--ink);stroke-width:1.5}
+.curve .dash{stroke:var(--signal);stroke-width:2;stroke-dasharray:5 5}
+.curve text{font:500 12px var(--mono);fill:var(--muted)}
+
+/* quiz card */
+.quiz{background:var(--surface);border:2px solid var(--ink);border-radius:16px;padding:24px;box-shadow:8px 8px 0 var(--ink);min-width:0}
+.quiz .tag{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:16px}
+.pill{font:500 .74rem var(--mono);padding:4px 10px;border-radius:999px;background:var(--teal-soft);color:var(--teal);letter-spacing:.06em;text-transform:uppercase}
+.data{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 8px}
+.data span{font:500 1.15rem var(--mono);min-width:44px;text-align:center;padding:8px 10px;border-radius:8px;background:var(--bg);border:1px solid var(--line)}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.opt{font:600 1.05rem var(--mono);padding:12px;border-radius:10px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--teal)}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%,var(--surface))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--surface))}
+.opt:disabled{cursor:default}
+.fb{min-height:3.4em;margin-top:14px;font-size:.95rem;color:var(--muted)}
+.fb b{color:var(--ink)}
+.quiz .again{margin-top:4px;background:none;border:none;color:var(--teal);font:600 .95rem var(--text);cursor:pointer;padding:0;text-decoration:underline}
+
+/* problem */
+.split{display:grid;grid-template-columns:1fr 1.2fr;gap:clamp(24px,5vw,72px)}
+.split>*{min-width:0}
+.problems{display:grid;gap:14px}
+.problem{display:grid;grid-template-columns:auto 1fr;gap:16px;padding:18px 20px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.problem .x{font:700 1.1rem var(--mono);color:var(--bad);width:28px}
+.problem.ok{border-color:var(--teal);background:var(--teal-soft)}
+.problem.ok .x{color:var(--teal)}
+.problem p{color:var(--muted);font-size:.98rem}
+.problem h3{font-size:1.05rem;margin-bottom:2px}
+
+/* features */
+.head{display:grid;gap:14px;margin-bottom:44px}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:2px solid var(--ink);border-radius:16px;overflow:hidden;background:var(--surface)}
+.f{padding:28px 26px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.f:nth-child(3n){border-right:none}
+.f:nth-child(n+4){border-bottom:none}
+.f .ic{width:44px;height:44px;border-radius:10px;background:var(--teal-soft);display:grid;place-items:center;margin-bottom:16px}
+.f .ic svg{width:24px;height:24px;stroke:var(--teal);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.f p{color:var(--muted);font-size:.98rem;margin-top:8px}
+.f .lock{display:inline-block;margin-top:12px;font:500 .72rem var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:var(--signal);color:var(--signal-ink)}
+
+/* path */
+.path{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px}
+.step{padding:22px;border-top:4px solid var(--teal);background:var(--surface);border-radius:0 0 12px 12px;border-inline:1px solid var(--line);border-bottom:1px solid var(--line)}
+.step .lv{font:500 .78rem var(--mono);color:var(--teal);letter-spacing:.1em;text-transform:uppercase}
+.step h3{margin:8px 0}
+.step p{color:var(--muted);font-size:.97rem}
+
+/* pricing */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
+.plan{display:flex;flex-direction:column;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:26px;min-width:0}
+.plan.pro{border-color:var(--ink);box-shadow:8px 8px 0 var(--signal);position:relative}
+.plan .badge{position:absolute;top:-14px;right:20px;background:var(--signal);color:var(--signal-ink);font:600 .75rem var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:999px}
+.plan h3{font-size:1.6rem}
+.plan .sub{color:var(--muted);font-size:.95rem;margin-top:6px;min-height:3em}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:20px}
+.seg button{font:600 .88rem var(--text);padding:9px 6px;border:none;border-radius:7px;background:transparent;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.price{margin-top:20px;padding:14px 16px;border-radius:10px;background:var(--teal-soft);font-size:.95rem;min-height:118px}
+.price small{display:block;font:500 .72rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.price .amt{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin:4px 0 2px}
+.price b{font:800 2rem/1.1 var(--display);letter-spacing:-.02em;color:var(--ink)}
+.price i{font-style:normal;color:var(--muted);font-size:.95rem}
+.price span{color:var(--muted);font-size:.9rem}
+.plan ul{list-style:none;padding:0;margin:22px 0 26px;display:grid;gap:11px;flex:1}
+.plan li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:.98rem}
+.plan li svg{width:20px;height:20px;margin-top:3px;stroke:var(--teal);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.plan li.no{color:var(--muted)}
+.plan li.no svg{stroke:var(--muted);opacity:.55}
+.plan .btn{width:100%}
+.note{margin-top:22px;color:var(--muted);font-size:.92rem}
+
+.tbl-wrap{margin-top:56px;overflow-x:auto;border:2px solid var(--ink);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.95rem}
+th,td{padding:13px 16px;text-align:center;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+thead th{font:700 .95rem var(--display);background:var(--bg)}
+tbody tr:last-child td{border-bottom:none}
+td.y{color:var(--teal);font-weight:700;font-size:1.1rem}
+td.n{color:var(--muted)}
+td small{display:block;color:var(--muted);font-size:.78rem;line-height:1.3}
+
+/* about */
+.vision{background:var(--ink);color:var(--bg);border-radius:20px;padding:clamp(28px,5vw,56px)}
+.vision .eyebrow{color:var(--signal)}
+.vision blockquote{margin:16px 0 0;font:700 clamp(1.4rem,3vw,2.1rem)/1.25 var(--display);letter-spacing:-.01em;max-width:32ch}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,64px);margin-top:48px}
+.cols>*{min-width:0}
+.mission{display:grid;gap:16px;margin:18px 0 0;padding:0;list-style:none;counter-reset:m}
+.mission li{counter-increment:m;display:grid;grid-template-columns:34px 1fr;gap:12px;color:var(--muted)}
+.mission li::before{content:counter(m);font:700 .9rem var(--mono);width:30px;height:30px;border-radius:50%;background:var(--teal-soft);color:var(--teal);display:grid;place-items:center}
+.values{display:grid;gap:14px;margin-top:18px}
+.val{padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.val p{color:var(--muted);font-size:.95rem;margin-top:4px}
+.cols h3{font-size:1.4rem}
+
+/* contact */
+.contact{background:var(--teal);color:#fff;border-radius:20px;padding:clamp(28px,5vw,56px);display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:center}
+.contact>*{min-width:0}
+.contact h2{color:#fff}
+.contact p{color:#E4F6F5;margin-top:14px;max-width:44ch}
+.ct{display:grid;gap:12px}
+.ct .row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;padding:14px 16px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);border-radius:12px}
+.ct small{display:block;font:500 .72rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#CFEFED}
+.ct a.v,.ct span.v{font-weight:600;color:#fff;overflow-wrap:anywhere}
+.ct button{font:600 .8rem var(--text);padding:6px 12px;border-radius:8px;border:1.5px solid #fff;background:transparent;color:#fff;cursor:pointer}
+.ct button:hover{background:#fff;color:#075B58}
+
+footer{padding-block:36px 48px;color:var(--muted);font-size:.92rem}
+footer .bar{border-top:1px solid var(--line);padding-top:24px}
+
+/* ruang belajar */
+.app{display:grid;grid-template-columns:264px minmax(0,1fr);gap:24px;align-items:start}
+.side{position:sticky;top:16px;background:var(--surface);border:2px solid var(--ink);border-radius:16px;padding:16px;min-width:0}
+.who small{display:block;font:500 .72rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.seg3 button{font:600 .85rem var(--text);padding:8px 4px;border:none;border-radius:7px;background:transparent;color:var(--muted);cursor:pointer}
+.seg3 button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.menu{display:grid;gap:4px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.menu button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px;border:none;background:transparent;border-radius:10px;font:600 .98rem var(--text);color:var(--ink);cursor:pointer}
+.menu button:hover{background:var(--teal-soft)}
+.menu button[aria-current="page"]{background:var(--ink);color:var(--bg)}
+.menu svg{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.menu .tg{margin-left:auto;font:500 .66rem var(--mono);padding:2px 7px;border-radius:6px;background:var(--signal);color:var(--signal-ink);letter-spacing:.04em}
+.pane{background:var(--surface);border:2px solid var(--ink);border-radius:16px;padding:clamp(18px,3vw,32px);min-width:0;min-height:560px;box-shadow:8px 8px 0 var(--teal)}
+.ph{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px 24px;margin-bottom:22px}
+.ph h3{font-size:1.6rem;margin-top:6px}
+.prog{min-width:180px;font:500 .82rem var(--mono);color:var(--muted)}
+.bar2{height:8px;border-radius:99px;background:var(--bg);border:1px solid var(--line);margin-top:6px;overflow:hidden}
+.bar2 i{display:block;height:100%;background:var(--teal);border-radius:99px;transition:width .3s}
+.ad{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 14px;border:1px dashed var(--muted);border-radius:10px;padding:10px 14px;font-size:.88rem;color:var(--muted);margin-bottom:20px}
+.ad a{color:var(--teal);font-weight:600}
+.learn{display:grid;grid-template-columns:250px minmax(0,1fr);gap:26px}
+.les{list-style:none;margin:0;padding:0;display:grid;gap:4px;align-content:start}
+.les .lvl{font:500 .7rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--teal);padding:12px 4px 4px}
+.les .lvl:first-child{padding-top:0}
+.les button{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;width:100%;text-align:left;padding:10px;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--ink);font:500 .9rem/1.3 var(--text);cursor:pointer}
+.les button:hover{background:var(--bg)}
+.les button[aria-current="true"]{background:var(--teal-soft);border-color:var(--teal)}
+.les .no{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:700 .75rem var(--mono);background:var(--bg);border:1px solid var(--line)}
+.les .du{font:500 .72rem var(--mono);color:var(--muted)}
+.lesson{min-width:0}
+.vid{position:relative;aspect-ratio:16/9;max-width:100%;border-radius:12px;background:#0A1A22;color:#fff;display:grid;place-items:center;overflow:hidden}
+.vid::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,rgba(63,194,187,.35),transparent 60%)}
+.vid .play{position:relative;width:64px;height:64px;border-radius:50%;border:none;background:var(--signal);color:var(--signal-ink);font-size:1.3rem;cursor:pointer}
+.vid .vt{position:absolute;right:12px;bottom:18px;font:500 .78rem var(--mono)}
+.vid .vb{position:absolute;left:0;right:0;bottom:0;height:6px;background:rgba(255,255,255,.2)}
+.vid .vb i{display:block;height:100%;width:0;background:var(--signal)}
+.vcap{font-size:.82rem;color:var(--muted);margin-top:8px}
+.mod{margin-top:20px;padding:18px 20px;background:var(--bg);border:1px solid var(--line);border-radius:12px}
+.mod h4{margin:0 0 6px;font:700 .75rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+.mod ul{margin:12px 0 0;padding-left:20px;display:grid;gap:6px;color:var(--muted);font-size:.96rem}
+.acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.acts .btn{padding:10px 18px;font-size:.95rem}
+.lock{padding:36px 8px;text-align:center;display:grid;gap:14px;justify-items:center}
+.lock p{color:var(--muted);max-width:44ch}
+.lock .big{width:56px;height:56px;border-radius:50%;background:var(--signal);color:var(--signal-ink);display:grid;place-items:center;font-size:1.4rem}
+.qq{font:700 1.3rem/1.35 var(--display);margin:0}
+.qopts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:18px 0}
+.pane .opt{font:600 1rem var(--text);text-align:left}
+.fb2{padding:14px 16px;border-radius:10px;background:var(--bg);border:1px solid var(--line);margin-bottom:16px;color:var(--muted)}
+.fb2 b{color:var(--ink)}
+.score{font:800 4rem/1 var(--display);color:var(--teal);margin:8px 0}
+.sess{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:16px;align-items:center;padding:16px;border:1px solid var(--line);border-radius:12px;margin-bottom:12px}
+.sess .dt{text-align:center;padding:8px 0;border-radius:10px;background:var(--teal-soft);font:500 .72rem var(--mono);color:var(--teal);text-transform:uppercase}
+.sess .dt b{display:block;font:800 1.7rem/1 var(--display);color:var(--ink)}
+.sess p{color:var(--muted);font-size:.9rem}
+.sess .btn{padding:10px 16px;font-size:.9rem}
+.sess .btn.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.case{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:var(--surface)}
+.case summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;padding:16px 18px;cursor:pointer;list-style:none}
+.case summary::-webkit-details-marker{display:none}
+.case summary h4{margin:0;font:700 1.08rem var(--display)}
+.case summary p{grid-column:1;color:var(--muted);font-size:.9rem}
+.case .tags{display:flex;gap:6px;flex-wrap:wrap;align-self:start}
+.case .body{padding:0 18px 18px;display:grid;gap:12px}
+.case ol{margin:0;padding-left:20px;color:var(--muted);display:grid;gap:4px;font-size:.95rem}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.tw table{min-width:420px;font-size:.88rem}
+.tw th,.tw td{padding:8px 12px;font-variant-numeric:tabular-nums}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tabs button{font:600 .88rem var(--text);padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.post{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.av{width:40px;height:40px;border-radius:50%;background:var(--teal-soft);color:var(--teal);display:grid;place-items:center;font:700 1rem var(--display)}
+.post.tutor .av{background:var(--signal);color:var(--signal-ink)}
+.post .who2{font-weight:600;font-size:.95rem}
+.post .who2 span{font:500 .7rem var(--mono);margin-left:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.post p{color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+.pform{display:grid;gap:10px;margin-top:18px}
+.pform input,.pform textarea{width:100%;font:400 1rem var(--text);padding:11px 14px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.pform textarea{min-height:84px;resize:vertical}
+.pform .btn{justify-self:start}
+.cnote{font-size:.82rem;color:var(--muted);margin-top:14px}
+@media (max-width:1060px){.learn{grid-template-columns:1fr}.lesson{order:-1}.les{grid-template-columns:1fr 1fr;gap:4px 12px}.les .lvl{grid-column:1/-1}}
+@media (max-width:960px){
+  .app{grid-template-columns:1fr}
+  .side{position:static}
+  .menu{display:flex;overflow-x:auto;gap:6px;padding-bottom:4px}
+  .menu button{width:auto;white-space:nowrap}
+}
+@media (max-width:620px){
+  .les{grid-template-columns:1fr}
+  .qopts{grid-template-columns:1fr}
+  .sess{grid-template-columns:64px minmax(0,1fr)}
+  .sess .btn{grid-column:1/-1}
+  .pane{box-shadow:5px 5px 0 var(--teal)}
+}
+
+@media (max-width:960px){
+  .hero-grid,.split,.cols,.contact{grid-template-columns:1fr}
+  .feat{grid-template-columns:1fr 1fr}
+  .f:nth-child(3n){border-right:1px solid var(--line)}
+  .f:nth-child(2n){border-right:none}
+  .f:nth-child(n+4){border-bottom:1px solid var(--line)}
+  .f:nth-child(n+5){border-bottom:none}
+  .plans{grid-template-columns:1fr;max-width:520px}
+  .plan.pro{margin-top:10px}
+  .path{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .feat{grid-template-columns:1fr}
+  .f{border-right:none!important;border-bottom:1px solid var(--line)!important}
+  .f:last-child{border-bottom:none!important}
+  nav a:not(.btn){display:none}
+  .quiz{padding:18px;box-shadow:5px 5px 0 var(--ink)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#atas" aria-label="Stativa, ke bagian atas">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="var(--ink)"/><path d="M5 31 C13 31 13 9 20 9 C27 9 27 31 35 31" fill="none" stroke="var(--signal)" stroke-width="3.5" stroke-linecap="round"/></svg>
+      Stativa
+    </a>
+    <nav aria-label="Navigasi utama">
+      <a href="#fitur">Fitur</a>
+      <a href="#kelas">Ruang belajar</a>
+      <a href="#jalur">Jalur belajar</a>
+      <a href="#paket">Paket</a>
+      <a href="#tentang">Tentang</a>
+      <a class="btn" href="#paket">Mulai belajar</a>
+    </nav>
+  </div>
+</header>
+
+<main id="atas">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Open course statistika · Yogyakarta</p>
+        <h1 style="margin-top:16px">Belajar statistika dari nol sampai <em>olah data skripsi</em>.</h1>
+        <p class="lead">Modul, video yang runtut, latihan soal interaktif, dan studi kasus nyata dalam satu website. Mulai gratis, lalu tambah pendampingan tutor saat kamu butuh kepastian metodologi.</p>
+        <div class="cta-row">
+          <a class="btn signal" href="#paket">Lihat paket</a>
+          <a class="btn alt" href="#fitur">Apa saja isinya</a>
+        </div>
+        <div class="chips" aria-label="Ringkasan">
+          <span class="chip">Mulai gratis</span>
+          <span class="chip">100% daring</span>
+          <span class="chip">Studi kasus nyata</span>
+          <span class="chip">Sesi bersama tutor</span>
+        </div>
+      </div>
+
+      <div class="quiz" id="quiz" aria-live="polite">
+        <div class="tag"><span class="pill">Contoh latihan soal</span><span class="chip" style="padding:3px 10px">Statistika deskriptif</span></div>
+        <h3>Berapa rata-rata (mean) data ini?</h3>
+        <div class="data" aria-label="Data: 4, 7, 7, 10, 12"><span>4</span><span>7</span><span>7</span><span>10</span><span>12</span></div>
+        <div class="opts" id="opts"></div>
+        <div class="fb" id="fb">Pilih satu jawaban. Latihan seperti ini ada di setiap bab.</div>
+        <button class="again" id="again" hidden>Coba lagi</button>
+      </div>
+    </div>
+
+    <svg class="curve" viewBox="0 0 1000 150" preserveAspectRatio="none" role="img" aria-label="Kurva distribusi normal">
+      <path class="fill" id="cf" d=""/>
+      <path class="stroke" id="cs" d=""/>
+      <line class="axis" x1="0" y1="130" x2="1000" y2="130"/>
+      <line class="dash" x1="500" y1="14" x2="500" y2="130"/>
+    </svg>
+  </div>
+</section>
+
+<section id="masalah">
+  <div class="wrap split">
+    <div>
+      <p class="eyebrow">Kenapa Stativa</p>
+      <h2 style="margin-top:14px">Tutorial gratis banyak. Yang runtut dan sesuai standar kampus jarang.</h2>
+      <p class="lead" style="margin-top:18px">Mahasiswa tingkat akhir sering terhambat di metodologi dan pengolahan data kuantitatif. Stativa menyusunnya jadi satu jalur belajar yang bisa kamu pegang.</p>
+    </div>
+    <div class="problems">
+      <div class="problem"><span class="x">✕</span><div><h3>Tutorial berserakan</h3><p>Informasi tersebar, tidak berurutan, dan sulit dinilai benar atau tidaknya.</p></div></div>
+      <div class="problem"><span class="x">✕</span><div><h3>Jawaban AI bisa keliru</h3><p>Rentan salah tafsir dan sering tidak cocok dengan standar penulisan akademik perguruan tinggi di Indonesia.</p></div></div>
+      <div class="problem"><span class="x">✕</span><div><h3>Bimbingan olah data mahal</h3><p>Jasa konvensional kurang fleksibel dan relatif berat di kantong mahasiswa.</p></div></div>
+      <div class="problem ok"><span class="x">✓</span><div><h3>Stativa</h3><p>Belajar mandiri berbasis studi kasus nyata, plus pendampingan tutor ahli lewat kelas daring.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="fitur">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Isi open course</p>
+      <h2>Enam hal yang kamu dapat di dalam kelas</h2>
+      <p class="lead">Materi dasar bisa dibuka lewat akses gratis. Fitur bertanda Pro tersedia di paket Pro dan Bundling.</p>
+    </div>
+    <div class="feat">
+      <article class="f">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6M9 12h6"/></svg></div>
+        <h3>Modul statistika</h3><p>Materi tersusun sistematis dari konsep dasar sampai uji untuk penelitian, ditulis dengan bahasa yang mudah diikuti.</p>
+      </article>
+      <article class="f">
+        <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg></div>
+        <h3>Video pembelajaran</h3><p>Video runtut yang bisa dipelajari dari nol hingga mahir. Tonton kapan saja, ulangi sebanyak yang kamu mau.</p>
+      </article>
+      <article class="f">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h9"/></svg></div>
+        <h3>Latihan soal</h3><p>Soal interaktif langsung di dalam web, dengan umpan balik saat itu juga supaya konsep benar-benar menempel.</p>
+      </article>
+      <article class="f">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></div>
+        <h3>File studi kasus</h3><p>Dataset dan kasus nyata untuk kamu selesaikan sendiri, seperti saat mengolah data skripsi.</p><span class="lock">Pro</span>
+      </article>
+      <article class="f">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h7M8.5 14h4"/></svg></div>
+        <h3>Open group discussion eksklusif</h3><p>Forum tanya jawab bersama pembelajar lain dan tutor, supaya kamu tidak buntu sendirian.</p><span class="lock">Pro</span>
+      </article>
+      <article class="f">
+        <div class="ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 5.2a3.5 3.5 0 0 1 0 5.6M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></svg></div>
+        <h3>Sesi bersama tutor</h3><p>Kelas daring terjadwal yang dipandu tutor ahli, untuk memastikan metodologimu tepat.</p><span class="lock">Pro</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="kelas" style="padding-top:0">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Ruang belajar</p>
+      <h2>Coba langsung isi kelasnya</h2>
+      <p class="lead">Pilih menu di sebelah kiri. Ganti pratinjau paket untuk melihat apa yang terbuka di Free, Basic, dan Pro. Materi, jadwal, dan percakapan di sini adalah contoh.</p>
+    </div>
+    <div class="app">
+      <aside class="side" aria-label="Menu ruang belajar">
+        <div class="who">
+          <small>Pratinjau paket</small>
+          <div class="seg3" role="group" aria-label="Pratinjau paket">
+            <button type="button" data-act="plan" data-p="free" aria-pressed="false">Free</button>
+            <button type="button" data-act="plan" data-p="basic" aria-pressed="false">Basic</button>
+            <button type="button" data-act="plan" data-p="pro" aria-pressed="true">Pro</button>
+          </div>
+        </div>
+        <div class="menu" id="menu" role="group" aria-label="Menu">
+          <button type="button" data-act="tab" data-k="learn" aria-current="page"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M10 9.5v4l3.5-2z"/></svg>Pembelajaran</button>
+          <button type="button" data-act="tab" data-k="quiz"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h9"/></svg>Latihan soal</button>
+          <button type="button" data-act="tab" data-k="tutor"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 5.2a3.5 3.5 0 0 1 0 5.6M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></svg>Sesi tutor</button>
+          <button type="button" data-act="tab" data-k="cases"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>File studi kasus</button>
+          <button type="button" data-act="tab" data-k="forum"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h7M8.5 14h4"/></svg>Group discussion</button>
+        </div>
+      </aside>
+      <div class="pane" id="pane" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<section id="jalur" style="padding-top:0">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Jalur belajar</p>
+      <h2>Dari belum paham sampai siap olah data sendiri</h2>
+    </div>
+    <div class="path">
+      <div class="step"><span class="lv">Tahap awal</span><h3>Pahami dasarnya</h3><p>Mulai dari modul dan video dasar, tanpa syarat pengetahuan statistika sebelumnya.</p></div>
+      <div class="step"><span class="lv">Tahap latihan</span><h3>Uji pemahamanmu</h3><p>Kerjakan latihan soal interaktif di web untuk memastikan tiap konsep sudah dikuasai.</p></div>
+      <div class="step"><span class="lv">Tahap terapan</span><h3>Selesaikan studi kasus</h3><p>Olah data nyata, diskusikan hasilnya di grup, lalu validasi bersama tutor.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="paket" style="background:var(--surface);border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Paket berbayar</p>
+      <h2>Mulai gratis. Upgrade saat kamu siap.</h2>
+      <p class="lead">Akses gratis memuat materi dasar dan iklan. Paket berbayar menghilangkan iklan dan membuka akses tanpa batas. Pilih durasi atau jumlah pengguna dengan tombol di tiap kartu.</p>
+    </div>
+
+    <div class="plans">
+      <article class="plan">
+        <h3>Free Access</h3>
+        <p class="sub">Untuk mencoba dan belajar dasar-dasarnya tanpa biaya.</p>
+        <div class="price"><small>Free Access</small><div class="amt"><b>Rp0</b><i>selamanya</i></div><span>Dibiayai tayangan iklan</span></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Akses terbatas ke materi dasar</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Sebagian konten terbuka lewat penayangan iklan</li>
+          <li class="no"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Bebas iklan</li>
+          <li class="no"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Studi kasus, grup diskusi, sesi tutor</li>
+        </ul>
+        <a class="btn alt" href="#kontak">Mulai gratis</a>
+      </article>
+
+      <article class="plan" data-plan="basic">
+        <h3>Basic</h3>
+        <p class="sub" data-desc>Langganan mingguan, cocok untuk kebut belajar sebelum ujian atau bimbingan.</p>
+        <div class="seg" role="group" aria-label="Pilih durasi Basic">
+          <button type="button" aria-pressed="true" data-v="0" data-d="Langganan mingguan, cocok untuk kebut belajar sebelum ujian atau bimbingan." data-t="Basic Mingguan" data-p="Rp10.000" data-u="/ minggu" data-s="Perpanjang tiap minggu">Mingguan</button>
+          <button type="button" aria-pressed="false" data-v="1" data-d="Langganan bulanan, cocok untuk belajar santai dan rutin sampai tuntas." data-t="Basic Bulanan" data-p="Rp30.000" data-u="/ bulan" data-s="Perpanjang tiap bulan">Bulanan</button>
+        </div>
+        <div class="price"><small data-t>Basic Mingguan</small><div class="amt"><b data-p>Rp10.000</b><i data-u>/ minggu</i></div><span data-s>Perpanjang tiap minggu</span></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Tanpa iklan</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Akses tanpa batas ke modul dan video pembelajaran</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Latihan soal interaktif di dalam web</li>
+          <li class="no"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Studi kasus, grup diskusi, sesi tutor</li>
+        </ul>
+        <a class="btn alt" href="#kontak">Pilih Basic</a>
+      </article>
+
+      <article class="plan pro" data-plan="pro">
+        <span class="badge">Paling lengkap</span>
+        <h3>Pro</h3>
+        <p class="sub" data-desc>Akses penuh untuk satu orang, termasuk studi kasus, grup diskusi, dan sesi tutor.</p>
+        <div class="seg" role="group" aria-label="Pilih jenis Pro">
+          <button type="button" aria-pressed="true" data-v="0" data-d="Akses penuh untuk satu orang, termasuk studi kasus, grup diskusi, dan sesi tutor." data-t="Pro · 1 orang" data-p="Rp79.000" data-u="/ bulan" data-s="Langganan bulanan untuk 1 pengguna">1 orang</button>
+          <button type="button" aria-pressed="false" data-v="1" data-d="Paket bundling bulanan untuk 3 pengguna dengan hak akses penuh setara Pro. Belajar bareng teman satu tim skripsi." data-t="Pro · Bundling 3 orang" data-p="Rp199.000" data-u="/ bulan" data-s="Untuk 3 pengguna, sekitar Rp66 ribu per orang">3 orang</button>
+        </div>
+        <div class="price"><small data-t>Pro · 1 orang</small><div class="amt"><b data-p>Rp79.000</b><i data-u>/ bulan</i></div><span data-s>Langganan bulanan untuk 1 pengguna</span></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Tanpa iklan</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Akses tanpa batas ke modul dan video pembelajaran</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Latihan soal interaktif di dalam web</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Akses file studi kasus nyata</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Open group discussion eksklusif</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Sesi bersama tutor</li>
+        </ul>
+        <a class="btn signal" href="#kontak">Pilih Pro</a>
+      </article>
+    </div>
+    <p class="note">Harga dalam rupiah. Basic dan Pro masing-masing punya dua pilihan, ganti dengan tombol di kartu. Hubungi kami lewat WhatsApp untuk cara berlangganan.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <caption style="position:absolute;left:-9999px">Perbandingan paket Stativa</caption>
+        <thead><tr><th scope="col">Fitur</th><th scope="col">Free<small style="display:block;font:500 .75rem var(--text);color:var(--muted)">Rp0</small></th><th scope="col">Basic<small style="display:block;font:500 .75rem var(--text);color:var(--muted)">Rp10.000/minggu · Rp30.000/bulan</small></th><th scope="col">Pro<small style="display:block;font:500 .75rem var(--text);color:var(--muted)">Rp79.000/bulan · Bundling 3 orang Rp199.000</small></th></tr></thead>
+        <tbody>
+          <tr><td>Tanpa iklan</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td></tr>
+          <tr><td>Modul dan video pembelajaran</td><td class="n">Materi dasar</td><td class="y">Tanpa batas</td><td class="y">Tanpa batas</td></tr>
+          <tr><td>Latihan soal interaktif</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td></tr>
+          <tr><td>File studi kasus nyata</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+          <tr><td>Open group discussion eksklusif</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+          <tr><td>Sesi bersama tutor</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="tentang">
+  <div class="wrap">
+    <div class="vision">
+      <p class="eyebrow">Visi Stativa</p>
+      <blockquote>Platform pembelajaran statistika terapan pilihan utama bagi mahasiswa di Indonesia: akurat secara akademik, terjangkau, dan praktis didampingi.</blockquote>
+    </div>
+    <div class="cols">
+      <div>
+        <h3>Misi kami</h3>
+        <ol class="mission">
+          <li>Menyediakan modul, file belajar berbasis studi kasus nyata, dan video tutorial statistika yang terstruktur serta mudah dipahami.</li>
+          <li>Menyelenggarakan kelas daring interaktif dan grup diskusi eksklusif yang dibimbing langsung tutor ahli.</li>
+          <li>Membuka akses belajar yang inklusif lewat model freemium, supaya dasar statistika bisa dipelajari tanpa hambatan biaya.</li>
+          <li>Mengembangkan ekosistem belajar digital yang adaptif, andal secara teknis, dan berkelanjutan.</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Nilai yang kami pegang</h3>
+        <div class="values">
+          <div class="val"><h3 style="font-size:1.05rem">Akurasi empiris</h3><p>Materi, pengolahan data, dan pembahasan kasus berpedoman pada kaidah statistika yang benar dan bisa dipertanggungjawabkan.</p></div>
+          <div class="val"><h3 style="font-size:1.05rem">Aksesibilitas</h3><p>Platform dan tingkatan layanan dirancang mudah digunakan dan terjangkau berbagai kalangan mahasiswa.</p></div>
+          <div class="val"><h3 style="font-size:1.05rem">Relevansi akademik</h3><p>Kurikulum dan studi kasus mengikuti kebutuhan perkuliahan dan standar penelitian tugas akhir di Indonesia.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kontak" style="padding-top:0">
+  <div class="wrap">
+    <div class="contact">
+      <div>
+        <h2>Ada pertanyaan? Tanya kami langsung.</h2>
+        <p>Tanya soal paket, jadwal sesi tutor, atau materi apa yang cocok untuk skripsimu. Kami balas lewat kanal yang kamu pilih.</p>
+        <div class="cta-row"><a class="btn signal" href="https://wa.me/6282283337417" target="_blank" rel="noopener">Chat WhatsApp</a></div>
+      </div>
+      <div class="ct">
+        <div class="row"><div><small>Email</small><span class="v" id="c-mail">stativa.course@gmail.com</span></div><button type="button" data-copy="stativa.course@gmail.com">Salin</button></div>
+        <div class="row"><div><small>WhatsApp</small><span class="v" id="c-wa">+62 822-8333-7417</span></div><button type="button" data-copy="+62 822-8333-7417">Salin</button></div>
+        <div class="row"><div><small>Instagram</small><a class="v" href="https://instagram.com/stativa.course" target="_blank" rel="noopener">@stativa.course</a></div><button type="button" data-copy="@stativa.course">Salin</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap bar">
+    <span><b style="font-family:var(--display)">Stativa</b> · Statistika Edukasi Inovativa</span>
+    <span>Yogyakarta · Berdiri 2026</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* kurva lonceng */
+  var pts=[],fillPts=[],W=1000,base=130,top=14;
+  for(var i=0;i<=100;i++){
+    var x=i*10,z=(x-500)/130,y=base-(base-top)*Math.exp(-z*z/2);
+    pts.push((i?'L':'M')+x+' '+y.toFixed(1));
+  }
+  var d=pts.join(' ');
+  document.getElementById('cs').setAttribute('d',d);
+  document.getElementById('cf').setAttribute('d',d+' L1000 '+base+' L0 '+base+' Z');
+
+  /* latihan soal */
+  var answers=[6,8,9,10],correct=8,opts=document.getElementById('opts'),fb=document.getElementById('fb'),again=document.getElementById('again');
+  function build(){
+    opts.innerHTML='';fb.textContent='Pilih satu jawaban. Latihan seperti ini ada di setiap bab.';again.hidden=true;
+    answers.forEach(function(a){
+      var b=document.createElement('button');b.type='button';b.className='opt';b.textContent=a;
+      b.addEventListener('click',function(){pick(a,b)});opts.appendChild(b);
+    });
+  }
+  function pick(a,btn){
+    var all=opts.querySelectorAll('.opt');
+    all.forEach(function(o){o.disabled=true;if(+o.textContent===correct)o.classList.add('right')});
+    if(a===correct){fb.innerHTML='<b>Benar.</b> Jumlah data 4 + 7 + 7 + 10 + 12 = 40, dibagi 5 data, hasilnya 8.';}
+    else{btn.classList.add('wrong');fb.innerHTML='<b>Belum tepat.</b> Jumlahkan semua data (40), lalu bagi dengan banyak data (5). Hasilnya 8.';}
+    again.hidden=false;
+  }
+  again.addEventListener('click',build);build();
+
+  /* toggle paket */
+  document.querySelectorAll('.plan[data-plan]').forEach(function(card){
+    var btns=card.querySelectorAll('.seg button');
+    btns.forEach(function(b){
+      b.addEventListener('click',function(){
+        btns.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});
+        card.querySelector('[data-desc]').textContent=b.dataset.d;
+        card.querySelector('.price small').textContent=b.dataset.t;
+        card.querySelector('.price b').textContent=b.dataset.p;
+        card.querySelector('.price i').textContent=b.dataset.u;
+        card.querySelector('.price span').textContent=b.dataset.s;
+      });
+    });
+  });
+
+  /* salin kontak */
+  document.querySelectorAll('[data-copy]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var t=b.dataset.copy;
+      function ok(){b.textContent='Tersalin';setTimeout(function(){b.textContent='Salin'},1600)}
+      try{navigator.clipboard.writeText(t).then(ok,function(){sel(b)})}catch(e){sel(b)}
+    });
+  });
+  function sel(b){var s=b.previousElementSibling.querySelector('.v');var r=document.createRange();r.selectNodeContents(s);var g=getSelection();g.removeAllRanges();g.addRange(r);b.textContent='Pilih lalu salin'}
+})();
+(function(){
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  var LV={free:0,basic:1,pro:2},plan='pro',tab='learn';
+  var NEED={learn:0,quiz:1,tutor:2,cases:2,forum:2},NN=['Free','Basic','Pro'];
+  var TITLE={learn:'Pembelajaran',quiz:'Latihan soal',tutor:'Sesi tutor',cases:'File studi kasus',forum:'Group discussion'};
+  var pane=document.getElementById('pane'),menu=document.getElementById('menu'),app=document.querySelector('.app');
+  var done={};try{done=JSON.parse(localStorage.getItem('stativa-done')||'{}')||{}}catch(e){done={}}
+  function save(){try{localStorage.setItem('stativa-done',JSON.stringify(done))}catch(e){}}
+
+  var lessons=[
+   {lv:'Dasar',t:'Pengantar statistika dan jenis data',dur:'12:40',b:'Statistika mengubah data mentah menjadi kesimpulan. Langkah pertama adalah mengenali jenis data, karena jenis data menentukan uji yang boleh dipakai.',p:['Nominal dan ordinal: data kategori','Interval dan rasio: data angka','Populasi dan sampel']},
+   {lv:'Dasar',t:'Statistika deskriptif: mean, median, modus',dur:'15:20',b:'Ukuran pemusatan meringkas data dalam satu angka. Pakai mean untuk data yang simetris dan median bila ada pencilan.',p:['Mean = jumlah data ÷ banyak data','Median = nilai tengah data yang sudah diurutkan','Modus = nilai yang paling sering muncul']},
+   {lv:'Dasar',t:'Ukuran penyebaran data',dur:'14:05',b:'Dua kelompok bisa punya rata-rata sama tetapi sebaran berbeda. Ukuran penyebaran menunjukkan seberapa jauh data menyebar dari pusatnya.',p:['Rentang (range)','Varians dan simpangan baku','Kuartil dan IQR']},
+   {lv:'Menengah',t:'Distribusi normal',dur:'18:30',b:'Banyak uji parametrik mengasumsikan data berdistribusi normal. Kurvanya berbentuk lonceng dan simetris di sekitar mean.',p:['Sekitar 68% data berada dalam ±1 simpangan baku','Sekitar 95% data berada dalam ±2 simpangan baku','Nilai Z = (x − mean) ÷ simpangan baku']},
+   {lv:'Menengah',t:'Uji hipotesis dan p-value',dur:'20:10',b:'Uji hipotesis memutuskan apakah pola di sampel cukup kuat untuk berlaku di populasi. H0 menyatakan tidak ada efek, H1 menyatakan ada efek.',p:['Tetapkan taraf signifikansi α, umumnya 0,05','Jika p-value < α, tolak H0','Pilih uji satu arah atau dua arah sesuai hipotesis']},
+   {lv:'Menengah',t:'Uji t',dur:'22:45',b:'Uji t membandingkan rata-rata dua kelompok. Periksa dulu asumsi normalitas dan homogenitas varians sebelum menafsirkan hasilnya.',p:['Independent t-test: dua kelompok berbeda','Paired t-test: pengukuran sebelum dan sesudah','Laporkan nilai t, derajat bebas, dan p-value']},
+   {lv:'Terapan',t:'Korelasi',dur:'16:55',b:'Korelasi mengukur kekuatan dan arah hubungan dua variabel. Korelasi tidak membuktikan sebab-akibat.',p:['Koefisien r berkisar dari −1 sampai +1','Pearson untuk data interval atau rasio, Spearman untuk data ordinal','Tafsirkan kekuatan, arah, dan signifikansinya']},
+   {lv:'Terapan',t:'Regresi linear sederhana',dur:'24:15',b:'Regresi memprediksi satu variabel dari variabel lain lewat persamaan garis. Hasilnya dibaca dari koefisien, R², dan uji signifikansi.',p:['Persamaan: Y = a + bX','R² = proporsi variasi Y yang dijelaskan X','Periksa asumsi, misalnya normalitas residual']},
+   {lv:'Terapan',t:'Menulis hasil analisis untuk skripsi',dur:'19:40',b:'Hasil olah data harus ditulis sesuai kaidah akademik. Tabel, interpretasi, dan pembahasan harus saling konsisten.',p:['Sajikan tabel ringkas dengan keterangan jelas','Tulis interpretasi sebelum pembahasan','Kaitkan temuan dengan teori dan penelitian terdahulu']}
+  ];
+  var li=0,timer=null,pct=0;
+
+  var qs=[
+   {q:'Berapa median dari data 3, 9, 5, 7, 11?',o:['5','7','9','7,5'],a:1,e:'Urutkan dulu: 3, 5, 7, 9, 11. Nilai tengahnya 7.'},
+   {q:'Berapa modus dari data 2, 3, 3, 5, 3, 8?',o:['2','3','5','8'],a:1,e:'Angka 3 muncul tiga kali, paling sering.'},
+   {q:'Tingkat kepuasan dengan pilihan "tidak puas, cukup, puas, sangat puas" termasuk jenis data apa?',o:['Nominal','Ordinal','Interval','Rasio'],a:1,e:'Kategorinya punya urutan, tetapi jarak antar kategori tidak pasti. Itu ciri data ordinal.'},
+   {q:'Pada distribusi normal, sekitar berapa persen data berada dalam ±2 simpangan baku dari mean?',o:['68%','90%','95%','99,7%'],a:2,e:'Aturan 68-95-99,7: ±2 simpangan baku mencakup sekitar 95%.'},
+   {q:'Nilai x = 70, mean = 60, simpangan baku = 5. Berapa nilai Z?',o:['1','2','10','14'],a:1,e:'Z = (70 − 60) ÷ 5 = 2.'},
+   {q:'p-value = 0,03 dan α = 0,05. Keputusannya?',o:['Tolak H0','Gagal menolak H0','Terima H1 tanpa uji lain','Uji tidak valid'],a:0,e:'p-value lebih kecil dari α, jadi H0 ditolak.'},
+   {q:'Koefisien korelasi r = −0,82 menunjukkan apa?',o:['Hubungan positif lemah','Tidak ada hubungan','Hubungan negatif kuat','Hubungan positif kuat'],a:2,e:'Tanda minus berarti berlawanan arah, dan 0,82 mendekati 1 sehingga kuat.'},
+   {q:'Pada persamaan regresi Y = 2 + 3X, berapa Y saat X = 4?',o:['10','12','14','24'],a:2,e:'Y = 2 + 3 × 4 = 14.'}
+  ];
+  var qi=0,score=0,ans=null;
+
+  var sess=[
+   {d:'21',m:'Nov',day:'Sabtu',n:'Uji t untuk data skripsi',t:'19.30 WIB · 90 menit'},
+   {d:'25',m:'Nov',day:'Rabu',n:'Korelasi dan regresi: membaca output',t:'19.30 WIB · 90 menit'},
+   {d:'28',m:'Nov',day:'Sabtu',n:'Menulis bab hasil dan pembahasan',t:'19.30 WIB · 90 menit'}
+  ];
+  var regs={};
+
+  var cases=[
+   {t:'Kepuasan pelanggan kafe',lv:'Dasar',n:'120 responden',sk:'Statistika deskriptif, uji t',d:'Sebuah kafe ingin tahu apakah skor kepuasan pelanggan laki-laki dan perempuan berbeda.',tk:['Hitung mean dan simpangan baku skor kepuasan.','Uji perbedaan rata-rata kepuasan laki-laki dan perempuan dengan independent t-test.','Tulis interpretasi hasil dalam dua paragraf.'],h:['Responden','Gender','Skor layanan','Skor harga','Kepuasan'],r:[[1,'P',4,3,4],[2,'L',5,4,5],[3,'P',3,3,3],[4,'L',4,2,3],[5,'P',5,4,5]]},
+   {t:'Jam belajar dan IPK mahasiswa',lv:'Menengah',n:'150 mahasiswa',sk:'Korelasi, regresi linear',d:'Peneliti ingin menguji apakah jam belajar per minggu memengaruhi IPK.',tk:['Hitung korelasi Pearson jam belajar dengan IPK.','Susun model regresi linear sederhana dan baca R².','Tuliskan temuan dalam format bab hasil skripsi.'],h:['Mahasiswa','Jam belajar/minggu','Kehadiran (%)','IPK'],r:[[1,12,90,3.21],[2,20,95,3.58],[3,8,75,2.85],[4,15,88,3.34],[5,25,98,3.72]]},
+   {t:'Pelatihan dan produktivitas karyawan',lv:'Menengah',n:'60 karyawan',sk:'Paired t-test',d:'Perusahaan mengukur skor produktivitas sebelum dan sesudah pelatihan.',tk:['Periksa normalitas selisih skor.','Lakukan paired t-test.','Simpulkan apakah pelatihan efektif dan tulis keterbatasannya.'],h:['Karyawan','Sebelum','Sesudah'],r:[[1,62,70],[2,55,61],[3,70,72],[4,48,59],[5,66,69]]}
+  ];
+  var cdone={};
+
+  var chans=['Umum','Uji hipotesis','Regresi dan korelasi'],ch=0;
+  var posts=[
+   [{n:'Rani',r:'Mahasiswa',x:'Kalau datanya tidak normal, apakah masih boleh pakai uji t?'},{n:'Tutor Stativa',r:'Tutor',x:'Cek ukuran sampel dan bentuk sebarannya. Bila jauh dari normal dan sampel kecil, pertimbangkan uji nonparametrik seperti Mann-Whitney.'}],
+   [{n:'Bayu',r:'Mahasiswa',x:'p-value saya 0,051. Boleh bilang hampir signifikan?'},{n:'Tutor Stativa',r:'Tutor',x:'Pada α 0,05 hasilnya tetap tidak signifikan. Laporkan nilai p apa adanya, lalu bahas ukuran efeknya.'}],
+   [{n:'Dina',r:'Mahasiswa',x:'R² saya 0,18. Apakah modelnya jelek?'},{n:'Tutor Stativa',r:'Tutor',x:'R² rendah itu wajar di penelitian sosial. Lihat signifikansi koefisien dan apakah teorimu mendukung arah hubungannya.'}]
+  ];
+
+  function lockedHtml(k){
+    var n=NEED[k];
+    return '<div class="lock"><div class="big" aria-hidden="true">🔒</div><h3>'+TITLE[k]+' ada di paket '+NN[n]+(n===1?' dan Pro':'')+'</h3><p>Kamu sedang melihat pratinjau paket '+NN[LV[plan]]+'. Upgrade untuk membuka menu ini, atau ganti pratinjau untuk melihat isinya.</p><div class="acts"><a class="btn signal" href="#paket">Lihat paket</a><button type="button" class="btn alt" data-act="plan" data-p="'+(n===1?'basic':'pro')+'">Pratinjau sebagai '+NN[n]+'</button></div></div>';
+  }
+
+  function lessonDetail(){
+    var x=lessons[li],lock=LV[plan]===0&&li>1;
+    if(lock)return '<div class="lock"><div class="big" aria-hidden="true">🔒</div><h3>'+esc(x.t)+'</h3><p>Materi ini terbuka di paket Basic dan Pro. Akses gratis memuat dua materi dasar pertama.</p><a class="btn signal" href="#paket">Lihat paket</a></div>';
+    var h='<p class="eyebrow">Materi '+(li+1)+' · '+x.lv+'</p><h3 style="margin:8px 0 14px;font-size:1.5rem">'+esc(x.t)+'</h3>';
+    h+='<div class="vid"><button type="button" class="play" data-act="play" aria-label="Putar video pratinjau">▶</button><span class="vt">'+x.dur+'</span><div class="vb"><i id="vbar"></i></div></div>';
+    h+='<p class="vcap">Pemutar pratinjau. Video pelajaran sungguhan diputar di tempat ini.</p>';
+    h+='<div class="mod"><h4>Ringkasan modul</h4><p>'+esc(x.b)+'</p><ul>'+x.p.map(function(p){return '<li>'+esc(p)+'</li>'}).join('')+'</ul></div>';
+    h+='<div class="acts"><button type="button" class="btn alt" data-act="done">'+(done[li]?'Batalkan tanda selesai':'Tandai selesai')+'</button>';
+    if(li<lessons.length-1)h+='<button type="button" class="btn" data-act="next">Materi berikutnya</button>';
+    return h+'</div>';
+  }
+  function renderLearn(){
+    clearInterval(timer);timer=null;
+    var free=LV[plan]===0,n=Object.keys(done).filter(function(k){return done[k]}).length;
+    var h='<div class="ph"><div><p class="eyebrow">Pembelajaran</p><h3>Modul dan video yang runtut</h3></div><div class="prog"><span>'+n+' dari '+lessons.length+' materi selesai</span><div class="bar2"><i style="width:'+(n/lessons.length*100)+'%"></i></div></div></div>';
+    if(free)h+='<div class="ad"><span><b>Iklan</b> · contoh tempat iklan di akses gratis</span><a href="#paket">Bebas iklan di Basic dan Pro</a></div>';
+    h+='<div class="learn"><ol class="les">';
+    var last='';
+    lessons.forEach(function(x,i){
+      if(x.lv!==last){h+='<li class="lvl">'+x.lv+'</li>';last=x.lv}
+      var lock=free&&i>1;
+      h+='<li><button type="button" data-act="lesson" data-i="'+i+'"'+(i===li?' aria-current="true"':'')+'><span class="no">'+(done[i]?'✓':i+1)+'</span><span>'+esc(x.t)+'</span><span class="du">'+(lock?'Basic':x.dur)+'</span></button></li>';
+    });
+    pane.innerHTML=h+'</ol><div class="lesson">'+lessonDetail()+'</div></div>';
+  }
+  function play(){
+    var btn=pane.querySelector('.play'),bar=document.getElementById('vbar');
+    if(!btn)return;
+    if(timer){clearInterval(timer);timer=null;btn.textContent='▶';return}
+    btn.textContent='❚❚';
+    timer=setInterval(function(){
+      pct+=2;bar.style.width=pct+'%';
+      if(pct>=100){clearInterval(timer);timer=null;pct=0;done[li]=true;save();renderLearn()}
+    },100);
+  }
+
+  function renderQuiz(){
+    if(qi>=qs.length){
+      pane.innerHTML='<div class="ph"><div><p class="eyebrow">Latihan soal</p><h3>Selesai</h3></div></div><p>Skor kamu</p><div class="score">'+score+'/'+qs.length+'</div><p style="color:var(--muted);max-width:46ch">'+(score>=6?'Pemahaman dasarmu sudah kuat. Lanjut ke studi kasus untuk berlatih dengan data nyata.':'Ulangi materi yang masih ragu, lalu coba lagi. Soal yang salah dijelaskan di tiap langkah.')+'</p><div class="acts"><button type="button" class="btn" data-act="qreset">Ulangi latihan</button></div>';
+      return;
+    }
+    var q=qs[qi];
+    var h='<div class="ph"><div><p class="eyebrow">Latihan soal</p><h3>Soal '+(qi+1)+' dari '+qs.length+'</h3></div><div class="prog"><span>Skor '+score+'</span><div class="bar2"><i style="width:'+(qi/qs.length*100)+'%"></i></div></div></div>';
+    h+='<p class="qq">'+esc(q.q)+'</p><div class="qopts">';
+    q.o.forEach(function(o,i){
+      var c='opt';if(ans!==null){if(i===q.a)c+=' right';else if(i===ans)c+=' wrong'}
+      h+='<button type="button" class="'+c+'" data-act="pick" data-i="'+i+'"'+(ans!==null?' disabled':'')+'>'+esc(o)+'</button>';
+    });
+    h+='</div>';
+    if(ans!==null)h+='<div class="fb2"><b>'+(ans===q.a?'Benar.':'Belum tepat.')+'</b> '+esc(q.e)+'</div><button type="button" class="btn" data-act="qnext">'+(qi===qs.length-1?'Lihat skor':'Soal berikutnya')+'</button>';
+    pane.innerHTML=h;
+  }
+
+  function renderTutor(){
+    var h='<div class="ph"><div><p class="eyebrow">Sesi tutor</p><h3>Kelas daring bersama tutor</h3></div></div><p style="color:var(--muted);margin-bottom:18px;max-width:60ch">Sesi grup terjadwal yang dipandu tutor ahli. Bawa pertanyaan dari data skripsimu.</p>';
+    sess.forEach(function(s,i){
+      h+='<div class="sess"><div class="dt">'+s.m+'<b>'+s.d+'</b></div><div><h4 style="margin:0;font:700 1.05rem var(--display)">'+esc(s.n)+'</h4><p>'+s.day+', '+s.t+'</p></div><button type="button" class="btn alt'+(regs[i]?' on':'')+'" data-act="reg" data-i="'+i+'" aria-pressed="'+(!!regs[i])+'">'+(regs[i]?'Terdaftar ✓':'Daftar sesi')+'</button></div>';
+    });
+    pane.innerHTML=h+'<p class="cnote">Jadwal di atas adalah contoh tampilan.</p>';
+  }
+
+  function csv(c){return [c.h.join(',')].concat(c.r.map(function(r){return r.join(',')})).join('\n')}
+  function renderCases(){
+    var h='<div class="ph"><div><p class="eyebrow">File studi kasus</p><h3>Kasus nyata untuk kamu selesaikan</h3></div></div>';
+    cases.forEach(function(c,i){
+      h+='<details class="case"><summary><h4>'+esc(c.t)+'</h4><div class="tags"><span class="pill">'+c.lv+'</span>'+(cdone[i]?'<span class="pill" style="background:var(--signal);color:var(--signal-ink)">Selesai</span>':'')+'</div><p>'+esc(c.n)+' · '+esc(c.sk)+'</p></summary><div class="body"><p style="color:var(--muted)">'+esc(c.d)+'</p><div><b style="font-size:.9rem">Tugasmu</b><ol>'+c.tk.map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ol></div><div class="tw"><table><thead><tr>'+c.h.map(function(x){return '<th>'+esc(x)+'</th>'}).join('')+'</tr></thead><tbody>'+c.r.map(function(r){return '<tr>'+r.map(function(x){return '<td>'+esc(x)+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table></div><div class="acts" style="margin-top:0"><button type="button" class="btn alt" data-act="copy" data-i="'+i+'">Salin data CSV</button><button type="button" class="btn alt" data-act="cdone" data-i="'+i+'">'+(cdone[i]?'Batalkan tanda selesai':'Tandai selesai')+'</button></div></div></details>';
+    });
+    pane.innerHTML=h+'<p class="cnote">Tabel menampilkan 5 baris pertama sebagai contoh. Dataset lengkap tersedia di kelas.</p>';
+    pane.querySelectorAll('.case').forEach(function(d,i){if(openCase===i)d.open=true;d.addEventListener('toggle',function(){if(d.open)openCase=i;else if(openCase===i)openCase=-1})});
+  }
+  var openCase=0;
+
+  function renderForum(){
+    var h='<div class="ph"><div><p class="eyebrow">Group discussion</p><h3>Diskusi eksklusif pengguna Pro</h3></div></div><div class="tabs" role="group" aria-label="Topik diskusi">';
+    chans.forEach(function(c,i){h+='<button type="button" data-act="chan" data-c="'+i+'" aria-pressed="'+(i===ch)+'">'+c+'</button>'});
+    h+='</div>';
+    posts[ch].forEach(function(p){
+      h+='<div class="post'+(p.r==='Tutor'?' tutor':'')+'"><div class="av" aria-hidden="true">'+esc(p.n.charAt(0))+'</div><div><div class="who2">'+esc(p.n)+'<span>'+esc(p.r)+'</span></div><p>'+esc(p.x)+'</p></div></div>';
+    });
+    h+='<form class="pform" id="pf"><label for="pn" style="font-weight:600;font-size:.9rem">Nama</label><input id="pn" maxlength="30" value="Kamu" autocomplete="off"><label for="pm" style="font-weight:600;font-size:.9rem">Pertanyaan atau pendapatmu</label><textarea id="pm" maxlength="400" placeholder="Tulis pertanyaan tentang data atau hasil analisismu"></textarea><button class="btn" type="submit">Kirim</button></form><p class="cnote">Percakapan di atas adalah contoh. Pesan yang kamu kirim di sini hanya tampil di halaman ini.</p>';
+    pane.innerHTML=h;
+  }
+
+  function render(){
+    clearInterval(timer);timer=null;
+    [].forEach.call(menu.querySelectorAll('button'),function(b){
+      var k=b.dataset.k,tg=b.querySelector('.tg');
+      b.setAttribute('aria-current',k===tab?'page':'false');
+      if(k===tab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
+      var lock=LV[plan]<NEED[k];
+      if(lock&&!tg){tg=document.createElement('span');tg.className='tg';b.appendChild(tg)}
+      if(tg){if(lock)tg.textContent=NN[NEED[k]];else tg.remove()}
+    });
+    [].forEach.call(app.querySelectorAll('.seg3 button'),function(b){b.setAttribute('aria-pressed',b.dataset.p===plan)});
+    if(LV[plan]<NEED[tab]){pane.innerHTML=lockedHtml(tab);return}
+    ({learn:renderLearn,quiz:renderQuiz,tutor:renderTutor,cases:renderCases,forum:renderForum})[tab]();
+  }
+
+  app.addEventListener('click',function(e){
+    var t=e.target.closest('[data-act]');if(!t)return;
+    var a=t.dataset.act,i=+t.dataset.i;
+    if(a==='plan'){plan=t.dataset.p;render()}
+    else if(a==='tab'){tab=t.dataset.k;render()}
+    else if(a==='lesson'){li=i;pct=0;renderLearn()}
+    else if(a==='play')play();
+    else if(a==='done'){done[li]=!done[li];save();renderLearn()}
+    else if(a==='next'){var n=li+1;if(LV[plan]===0&&n>1)n=li;li=n;pct=0;renderLearn()}
+    else if(a==='pick'){ans=i;if(i===qs[qi].a)score++;renderQuiz()}
+    else if(a==='qnext'){qi++;ans=null;renderQuiz()}
+    else if(a==='qreset'){qi=0;score=0;ans=null;renderQuiz()}
+    else if(a==='reg'){regs[i]=!regs[i];renderTutor()}
+    else if(a==='cdone'){cdone[i]=!cdone[i];openCase=i;renderCases()}
+    else if(a==='copy'){
+      var txt=csv(cases[i]);
+      var fail=function(){var ta=document.createElement('textarea');ta.readOnly=true;ta.value=txt;ta.style.cssText='width:100%;height:120px;font:12px monospace';t.parentNode.parentNode.appendChild(ta);ta.select();t.textContent='Salin manual dari kotak'};
+      try{navigator.clipboard.writeText(txt).then(function(){t.textContent='Tersalin ✓'},fail)}catch(x){fail()}
+    }
+    else if(a==='chan'){ch=+t.dataset.c;renderForum()}
+  });
+  app.addEventListener('submit',function(e){
+    if(e.target.id!=='pf')return;
+    e.preventDefault();
+    var n=document.getElementById('pn').value.trim()||'Kamu',m=document.getElementById('pm').value.trim();
+    if(!m)return;
+    posts[ch].push({n:n,r:'Mahasiswa',x:m});renderForum();
+  });
+  render();
+})();
+
+</script>
